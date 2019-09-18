@@ -1,114 +1,91 @@
-const webpack = require('webpack');
 const path = require('path')
-const CompressionPlugin = require("compression-webpack-plugin");
-let { version, openGzip } = require('./package.json');
-version = version.replace(/\./g,'_');
 
 module.exports = {
-    publicPath:process.env.NODE_ENV === 'production' ? '/vue':'/',    //基本路径
-    outputDir:'dist',   //文件输出路径
-    assetsDir: 'static',    //静态资源文件
-    lintOnSave:false,   //eslint-loader 是否在保存的时候检查
-    //webpack配置
+    //部署应用的基本url  可用 process.env.NODE_ENV 环境变量控制
+    publicPath: '/',
+    //指定生产环境目录
+    outputDir: 'dist',
+    //指定生成静态资源的生成目录
+    assetsDir: 'static',
+    //指定生成的index.html的输出名
+    indexPath:'index.html',
+    //生成静态资源文件名包含hash以更好的控制缓存
+    filenameHashing:true,
+    //是否在开发环境下通过 eslint-loader 在每次保存时 lint 代码。这个值会在 @vue/cli-plugin-eslint 被安装之后生效
+    lintOnSave: false,
+    // webpack配置
+    // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
+    //是一个函数，会接收一个基于 webpack-chain 的 ChainableConfig 实例。允许对内部的 webpack 配置进行更细粒度的修改。
     chainWebpack: (config) => {
-        config.resolve
-            .symlinks(true)  // 修复HMR
         config.module
-            .rule('image')
+            .rule('images')
             .use('image-webpack-loader')
             .loader('image-webpack-loader')
+        // config.resolve
+        // 			.alias
+        // 			.merge({
+        // 				'@api' : path.resolve('./src/api'),
+        // 				'@views' : path.resolve('./src/views'),
+        // 				'@component' : path.resolve('./src/components')
+        // 			})
     },
-    configureWebpack: (config) =>{
-        if (process.env.NODE_ENV === 'production') {
-            //生产环境
-            config.mode = 'production'
-            // 将每个依赖包打包成单独的js文件
-            let optimization = {
-                runtimeChunk: 'single',
-                splitChunks: {
-                    chunks: 'all',
-                    maxInitialRequests: Infinity,
-                    minSize: 20000, // 依赖包超过20000bit将被单独打包
-                    cacheGroups: {
-                        vendor: {
-                            test: /[\\/]node_modules[\\/]/,
-                            name (module) {
-                                // get the name. E.g. node_modules/packageName/not/this/part.js
-                                // or node_modules/packageName
-                                const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
-                                // npm package names are URL-safe, but some servers don't like @ symbols
-                                return `npm.${packageName.replace('@', '')}`
-                            }
-                        }
-                    }
-                }
-            }
-            Object.assign(config, {
-                // 输出js文件加入版本号
-                output:{
-                    ...config.output,
-                    filename: `static/js/[name].[chunkhash].${version}.js`,
-                    chunkFilename: `static/js/[name].[chunkhash].${version}.js`
-                },
-                optimization
-            })
-            // 开启Gzip压缩
-            if(openGzip){
-                config.plugins = [
-                    ...config.plugins,
-                    new CompressionPlugin({
-                        test:/\.js$|\.html$|.\css/, //匹配文件名
-                        threshold: 10240,//对超过10k的数据压缩
-                        deleteOriginalAssets: false //不删除源文件
-                    })
-                ]
-            }
-        }else{
-            //开发环境
-            config.mode = 'development'
-        }
-        Object.assign(config)
+    //这个值是一个对象，则会通过 webpack-merge 合并到最终的配置中。
+    configureWebpack:{
+        performance:{
+            hints:false
+        },
+        plugins:[
+            // new webpack.ProvidePlugin({
+            // 	$: 'jquery',
+            // 	jQuery: 'jquery'
+            // })
+            // new BundleAnalyzerPlugin()
+        ]
     },
-    runtimeCompiler: false,  //默认false ，是否使用包含运行时编译器的 Vue 构建版本。设置为 true 后你就可以在 Vue 组件中使用 template 选项了，但是这会让你的应用额外增加 10kb 左右。
-    productionSourceMap: false ,    //如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
+    //是否使用包含运行时编译器的 Vue 构建版本
+    //设置为 true 后你就可以在 Vue 组件中使用 template 选项了，但是这会让你的应用额外增加 10kb 左右。
+    runtimeCompiler: false,
+    //如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
+    productionSourceMap: false,
     css: {
-        sourceMap: false, //开启 CSS source maps?
+        //是否将组件中的 CSS 提取至一个独立的 CSS 文件中 (而不是动态注入到 JavaScript 中的 inline 代码)。
+        // extract:process.env.NODE_ENV === 'production' ? false : true,
+        // 开启 CSS source maps?
+        sourceMap: false,
         // css预设器配置项
         loaderOptions: {
-            less: {
+            less:{
                 test: /\.less$/,
                 loader: "style-loader!css-loader!less-loader",
             },
         },
-        modules: false, //启用 CSS modules for all css / pre-processor files.
+        // 启用 CSS modules for all css / pre-processor files.
+        modules: false
     },
-    parallel: require('os').cpus().length > 1, //是否为 Babel 或 TypeScript 使用 thread-loader。该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建。
-    pwa: {} , //    向 PWA 插件传递选项
-    // 这是一个不进行任何 schema 验证的对象，因此它可以用来传递任何第三方插件选项。例如：
+    // use thread-loader for babel & TS in production build
+    // enabled by default if the machine has more than 1 cores
+    parallel: require('os').cpus().length > 1,
+    //向 PWA 插件传递选项。
+    pwa:{},
+    //这是一个不进行任何 schema 验证的对象，因此它可以用来传递任何第三方插件选项
     pluginOptions: {
-        foo: {
-            // 插件可以作为 `options.pluginOptions.foo` 访问这些选项。
-        }
     },
-    // 开发环境配置
+    //开发服务配置
     devServer: {
-        port:'80', // 端口
-        host: '0.0.0.0', // 允许外部ip访问
-        https: false, // 启用https
-    },
-    overlay: {
-        warnings: true,
-        errors: true
-    }, // 错误、警告在页面弹出
-    // proxy: {
-    //     '/api': {
-    //         target: 'http://www.baidu.com/api',
-    //         changeOrigin: true, // 允许websockets跨域
-    //         // ws: true,
-    //         pathRewrite: {
-    //             '^/api': ''
-    //         }
-    //     }
-    // } // 代理转发配置，用于调试环境
-
+        port:'80',
+        //   proxy: {
+        //     '/api': {
+        //         target: 'http://192.168.0.192:8807',
+        //         ws: true,//是否代理websockets
+        //         changeOrigin: true,   // 设置同源  默认false，是否需要改变原始主机头为目标URL
+        //         pathRewrite: {
+        //           '^/api': '',//重写,
+        //       }
+        //     }
+        // },
+        overlay: {
+            warnings: true,
+            errors: true
+        }
+    }
 }
