@@ -95,7 +95,7 @@ export default {
   methods: {
     //子组件  td 点击事件
     pickDay(day , data) {
-        if(new Date(day) < new Date()) {
+        if(new Date(day) < new Date(fecha.format(new Date(), 'yyyy-MM-dd'))) {
             this.$message.error("无效排班:当前日期之前设置无效")
         }else{
             if(this.ifEdit) {
