@@ -2,13 +2,13 @@ const path = require('path')
 
 module.exports = {
     //部署应用的基本url  可用 process.env.NODE_ENV 环境变量控制
-    publicPath: '/',
+    publicPath: './',
     //指定生产环境目录
     outputDir: 'dist',
     //指定生成静态资源的生成目录
     assetsDir: 'static',
     //指定生成的index.html的输出名
-    indexPath:'index.html',
+    indexPath:'./index.html',
     //生成静态资源文件名包含hash以更好的控制缓存
     filenameHashing:true,
     //是否在开发环境下通过 eslint-loader 在每次保存时 lint 代码。这个值会在 @vue/cli-plugin-eslint 被安装之后生效
@@ -24,7 +24,7 @@ module.exports = {
         // config.resolve
         // 			.alias
         // 			.merge({
-        // 				'@api' : path.resolve('./src/api'),
+        // 				'@api' : path.resolve('./src/apis'),
         // 				'@views' : path.resolve('./src/views'),
         // 				'@component' : path.resolve('./src/components')
         // 			})
