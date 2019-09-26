@@ -79,6 +79,10 @@ export default {
     tabList:{
         type: Array ,
         default: () => []
+    },
+    ifEdit:{
+        type: Boolean,
+        default: false
     }
   },
 
@@ -91,8 +95,18 @@ export default {
   methods: {
     //子组件  td 点击事件
     pickDay(day , data) {
-      this.realSelectedDay = day;
-      this.$refs.CalendarEdit.init(day , data) ;
+        if(new Date(day) < new Date()) {
+            this.$message.error("无效排班:当前日期之前设置无效")
+        }else{
+            if(this.ifEdit) {
+                this.realSelectedDay = day;
+                this.$refs.CalendarEdit.init(day , data) ;
+            }else{
+                this.$message.error("无效排班:当前角色无权限")
+            }
+        }
+
+
 
     },
     refreshData(){
