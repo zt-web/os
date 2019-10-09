@@ -246,19 +246,18 @@ export default {
                 row.map((cell, key) => <td key={key}
                   class={ this.getCellClass(cell) }
                   onClick={this.pickDay.bind(this, cell,cell.data)}>
-      <div class="calendar-card_td">
-      <div class="calendar-card-day">
-          {
-              this.cellRenderProxy(cell)
-  }
-  </div>
-      <div class="calendar-card-day_data">
-          {
-              cell.data
-  }
-  </div>
-      </div>
-
+                  <div class="calendar-card_td">
+                  <div class="calendar-card-day">
+                      {
+                          this.cellRenderProxy(cell)
+                      }
+                  </div>
+                  <div class="calendar-card-day_data">
+                      {
+                          cell.data
+                      }
+                  </div>
+                  </div>
                 </td>)
               }
             </tr>)

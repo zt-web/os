@@ -63,7 +63,7 @@
     margin-top: 10px;
 
 }
-/*.calendar-card-table .calendar-card_td .calendar-card-day:hover{*/
-    /*cursor:pointer;*/
-    /*background-color:#F2F8FE*/
-/*}*/
+.calendar-card-table .calendar-card_td:hover{
+    cursor:pointer;
+    background-color:#F2F8FE
+}
