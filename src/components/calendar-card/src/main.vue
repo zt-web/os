@@ -1,12 +1,5 @@
 <template>
     <div class="calendar-card">
-        <!--    <div class="calendar-card__header">-->
-        <!--      <span @click="selectDate('prev-month')">上一月</span>-->
-        <!--      {{ i18nDate }}-->
-        <!--      <span @click="selectDate('next-month')">下一月</span>-->
-        <!--      &nbsp;-->
-        <!--      <span @click="selectDate('today')">当前月</span>-->
-        <!--    </div>-->
         <div class="el-calendar__header">
             <div class="el-calendar__title">
                 {{ i18nDate }}
@@ -116,7 +109,6 @@
         methods: {
             //子组件  td 点击事件
             pickDay(day, data) {
-                console.log(day, data)
                 if (new Date(day) < new Date(fecha.format(new Date(), 'yyyy-MM-dd'))) {
                     this.$message.error("无效排班:当前日期之前设置无效")
                 } else {
@@ -127,17 +119,13 @@
                         this.$message.error("无效排班:当前角色无权限")
                     }
                 }
-
-
             },
             refreshData() {
                 this.$emit("refreshData")
             },
-
             mounthSelected(day) {
                 this.realSelectedDay = day;
             },
-
             selectDate(type) {
                 if (validTypes.indexOf(type) === -1) {
                     throw new Error(`invalid type ${type}`);

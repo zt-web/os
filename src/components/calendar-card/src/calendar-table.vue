@@ -59,7 +59,13 @@ export default {
         if (date === this.selectedDay) {
           classes.push('is-selected');
         }
+        if(date < this.formatedToday) {
+            classes.push('is-old');
+        }
         if (date === this.formatedToday) {
+            if('' === this.selectedDay || null == this.selectedDay || undefined == this.selectedDay) {
+                classes.push('is-selected') ;
+            }
           classes.push('is-today');
         }
       }
@@ -139,7 +145,7 @@ export default {
         let that = this ;
 
           const prevMonthDays = getPrevMonthLastDays(date, firstDay - firstDayOfWeek).map(function(day) {
-              let data = '';
+              let data = [];
               // let d = ((new Number(current_year) > 1 ? current_year : new Number(current_year) -1) + '-' + (new Number(current_year) > 1 ? (new Number(current_month) -1) : 12 ) + '-' + day) ;
               let d = current_year + '-' + current_month + '-' + day ;
                   try{
@@ -156,12 +162,13 @@ export default {
                   return {
                       text: day,
                       type: 'prev',
-                      data : data
+                      data : data,
+                      _d:d
 
                   }
               });
         const currentMonthDays = getMonthDays(date).map(function(day){
-            let data = '';
+            let data = [];
             let d = current_year + '-' + current_month + '-' + day ;
             try{
                 that.tabList.forEach(function(_d) {
@@ -177,12 +184,13 @@ export default {
           return {
               text: day,
               type: 'current',
-              data:data
+              data:data,
+              _d:d
           }
         });
         days = [...prevMonthDays, ...currentMonthDays];
           const nextMonthDays = rangeArr(42 - days.length).map(function(_, index){
-              let data = '';
+              let data = [];
               // let d =((new Number(current_month) < 12 ? current_year : new Number(current_year) + 1 ) + '-' + (new Number(current_month) < 12 ? new Number(current_month) + 1 : 1) + '-' + (index+1));
               let d = current_year + '-' + current_month + '-' + (index+1) ;
               try{
@@ -199,7 +207,8 @@ export default {
               return {
                   text: index + 1,
                   type: 'next',
-                  data:data
+                  data:data,
+                  _d:d
               }
           });
         days = days.concat(nextMonthDays);
@@ -245,20 +254,29 @@ export default {
               }}
               key={index}>
               {
-                row.map((cell, key) => <td key={key}
+                row.map((cell, key) => <td title={cell.data.join(',')} key={key}
                   class={ this.getCellClass(cell) }
                   onClick={this.pickDay.bind(this, cell,cell.data)}>
                   <div class="calendar-card_td">
-                  <div class="calendar-card-day">
+                      <div class="calendar-card-day">
+                          {
+                              cell._d === this.formatedToday ? '今天' : this.cellRenderProxy(cell)
+                          }
+                      </div>
+
+                     <div class='calendar-card-day_data'>
+                        {
+                            cell.data.map((_d , k) => <div>
+                              {
+                                _d
+                              }
+                           </div>)
+                        }
                       {
-                          this.cellRenderProxy(cell)
+                          <div class="ellipsis">{cell.data.length >= 2 ? '...' : ''}</div>
                       }
-                  </div>
-                  <div class="calendar-card-day_data">
-                      {
-                          cell.data
-                      }
-                  </div>
+                    </div>
+
                   </div>
                 </td>)
               }

@@ -37,8 +37,14 @@
     transition:background-color .2s ease
 }
 .calendar-card-table td.is-selected{
-    background-color: #C0C4CC;
+    background-color:#f2f8fe;
 }
+
+.calendar-card-table td.is-old{
+    color:#C0C4CC;
+    cursor:no-drop;
+}
+
 .calendar-card-table td.is-today{
     color: crimson;
 }
@@ -52,19 +58,33 @@
     border-top:none
 }
 .calendar-card-table .calendar-card_td .calendar-card-day{
-    margin-bottom: 5px;
+    margin-bottom: 2px;
  }
 .calendar-card-table .calendar-card_td{
     -webkit-box-sizing:border-box;
     box-sizing:border-box;
     padding:8px;
-    height:85px
+    height:85px;
 }
 .calendar-card-table .calendar-card_td .calendar-card-day_data {
-    margin-top: 10px;
-
+    font-size: small;
+    margin-top: 6px;
+    height: 42px;
+    line-height: 20px;
+    overflow: hidden;
+    position: relative;
 }
 .calendar-card-table .calendar-card_td:hover{
     cursor:pointer;
     background-color:#F2F8FE
+}
+.calendar-card-table td.is-old .calendar-card_td:hover{
+    background:transparent;
+    cursor:no-drop;
+}
+.ellipsis{
+    position: absolute;
+    bottom: -4px;
+    right: 94px;
+    font-size: 18px;
 }

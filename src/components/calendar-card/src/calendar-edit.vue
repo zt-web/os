@@ -5,7 +5,6 @@
         :visible.sync="visible"
         width="30%"
     >
-        <el-input v-model="data"></el-input>
         <el-checkbox-group v-model="nameCheck">
             <el-checkbox v-for="item in checkList" :key="item.id" :label="item.name" @change="changeCheck">{{item.name}}</el-checkbox>
         </el-checkbox-group>
@@ -20,7 +19,6 @@
             return {
                 visible:false,
                 day:'',
-                data:'',
                 nameCheck:[],
                 checkList: [
                     {id:1,name:'田丽姝'},
@@ -34,9 +32,10 @@
         },
         methods:{
             init(day , data){
+                console.log(day,data);
                 this.visible = true;
                 this.day = day ;
-                this.data = data;
+                this.nameCheck = data;
             },
             refresh(){
                 this.visible = false;
