@@ -139,8 +139,9 @@ export default {
         let that = this ;
 
           const prevMonthDays = getPrevMonthLastDays(date, firstDay - firstDayOfWeek).map(function(day) {
-                  let data = '';
-                  let d = ((new Number(current_year) > 1 ? current_year : new Number(current_year) -1) + '-' + (new Number(current_year) > 1 ? (new Number(current_month) -1) : 12 ) + '-' + day) ;
+              let data = '';
+              // let d = ((new Number(current_year) > 1 ? current_year : new Number(current_year) -1) + '-' + (new Number(current_year) > 1 ? (new Number(current_month) -1) : 12 ) + '-' + day) ;
+              let d = current_year + '-' + current_month + '-' + day ;
                   try{
                       that.tabList.forEach(function(_d) {
                               if (_d.date === fecha.format(new Date(d), 'yyyy-MM-dd')) {
@@ -175,14 +176,15 @@ export default {
             }
           return {
               text: day,
-             type: 'current',
+              type: 'current',
               data:data
           }
         });
         days = [...prevMonthDays, ...currentMonthDays];
           const nextMonthDays = rangeArr(42 - days.length).map(function(_, index){
               let data = '';
-              let d =((new Number(current_month) < 12 ? current_year : new Number(current_year) + 1 ) + '-' + (new Number(current_month) < 12 ? new Number(current_month) + 1 : 1) + '-' + (index+1));
+              // let d =((new Number(current_month) < 12 ? current_year : new Number(current_year) + 1 ) + '-' + (new Number(current_month) < 12 ? new Number(current_month) + 1 : 1) + '-' + (index+1));
+              let d = current_year + '-' + current_month + '-' + (index+1) ;
               try{
                   that.tabList.forEach(function(_d) {
                           if (_d.date === fecha.format(new Date(d), 'yyyy-MM-dd')) {

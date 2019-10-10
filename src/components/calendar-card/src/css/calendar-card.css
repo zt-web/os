@@ -18,7 +18,8 @@
 }
 .calendar-card-table thead th{
     color:#606266;
-    font-weight:400
+    font-weight:400;
+    padding:12px 0;
 }
 
 .calendar-card-table thead {
