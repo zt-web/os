@@ -5,6 +5,7 @@ import {
     ButtonGroup,
     Dialog,
     Input,
+    Table,
     Loading,
     MessageBox,
     Message,
@@ -16,6 +17,7 @@ Vue.use(Loading.directive)
 Vue.use(Button)
 Vue.use(Input)
 Vue.use(ButtonGroup)
+Vue.use(Table)
 
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$msgbox = MessageBox;
