@@ -59,7 +59,13 @@ export default {
         if (date === this.selectedDay) {
           classes.push('is-selected');
         }
+        if(date < this.formatedToday) {
+            classes.push('is-old');
+        }
         if (date === this.formatedToday) {
+            if('' === this.selectedDay || null == this.selectedDay || undefined == this.selectedDay) {
+                classes.push('is-selected') ;
+            }
           classes.push('is-today');
         }
       }
@@ -139,8 +145,8 @@ export default {
         let that = this ;
 
           const prevMonthDays = getPrevMonthLastDays(date, firstDay - firstDayOfWeek).map(function(day) {
-                  let data = '';
-                  let d = ((new Number(current_year) > 1 ? current_year : new Number(current_year) -1) + '-' + (new Number(current_year) > 1 ? (new Number(current_month) -1) : 12 ) + '-' + day) ;
+              let data = [];
+              const d = ((new Number(current_month) > 1 ? current_year : new Number(current_year) -1) + '-' + (new Number(current_month) > 1 ? (new Number(current_month) -1) : 12 ) + '-' + day) ;
                   try{
                       that.tabList.forEach(function(_d) {
                               if (_d.date === fecha.format(new Date(d), 'yyyy-MM-dd')) {
@@ -155,13 +161,14 @@ export default {
                   return {
                       text: day,
                       type: 'prev',
-                      data : data
+                      data : data,
+                      _d:d
 
                   }
               });
         const currentMonthDays = getMonthDays(date).map(function(day){
-            let data = '';
-            let d = current_year + '-' + current_month + '-' + day ;
+            let data = [];
+            const d = current_year + '-' + current_month + '-' + day ;
             try{
                 that.tabList.forEach(function(_d) {
                         if (_d.date === fecha.format(new Date(d), 'yyyy-MM-dd')) {
@@ -175,14 +182,15 @@ export default {
             }
           return {
               text: day,
-             type: 'current',
-              data:data
+              type: 'current',
+              data:data,
+              _d:d
           }
         });
         days = [...prevMonthDays, ...currentMonthDays];
           const nextMonthDays = rangeArr(42 - days.length).map(function(_, index){
-              let data = '';
-              let d =((new Number(current_month) < 12 ? current_year : new Number(current_year) + 1 ) + '-' + (new Number(current_month) < 12 ? new Number(current_month) + 1 : 1) + '-' + (index+1));
+              let data = [];
+              const d =((new Number(current_month) < 12 ? current_year : new Number(current_year) + 1 ) + '-' + (new Number(current_month) < 12 ? new Number(current_month) + 1 : 1) + '-' + (index+1));
               try{
                   that.tabList.forEach(function(_d) {
                           if (_d.date === fecha.format(new Date(d), 'yyyy-MM-dd')) {
@@ -197,7 +205,8 @@ export default {
               return {
                   text: index + 1,
                   type: 'next',
-                  data:data
+                  data:data,
+                  _d:d
               }
           });
         days = days.concat(nextMonthDays);
@@ -243,22 +252,30 @@ export default {
               }}
               key={index}>
               {
-                row.map((cell, key) => <td key={key}
+                row.map((cell, key) => <td title={cell.data.join(',')} key={key}
                   class={ this.getCellClass(cell) }
                   onClick={this.pickDay.bind(this, cell,cell.data)}>
-      <div class="calendar-card_td">
-      <div class="calendar-card-day">
-          {
-              this.cellRenderProxy(cell)
-  }
-  </div>
-      <div class="calendar-card-day_data">
-          {
-              cell.data
-  }
-  </div>
-      </div>
+                  <div class="calendar-card_td">
+                      <div class="calendar-card-day">
+                          {
+                              cell._d === this.formatedToday ? '今天' : this.cellRenderProxy(cell)
+                          }
+                      </div>
 
+                     <div class='calendar-card-day_data'>
+                        {
+                            cell.data.map((_d , k) => <div>
+                              {
+                                _d
+                              }
+                           </div>)
+                        }
+                      {
+                          <div class="ellipsis">{cell.data.length >= 2 ? '...' : ''}</div>
+                      }
+                    </div>
+
+                  </div>
                 </td>)
               }
             </tr>)
